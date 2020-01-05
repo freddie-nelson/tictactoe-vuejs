@@ -1,8 +1,12 @@
 <template>
   <div id="app">
+    <!-- <h2 class="title">TicTacToe</h2> -->
     <Board v-bind:board="game.board" v-on:click-cell="clickCell($event)"/>
-    <div v-if="this.game.gameEnd" class="winning-msg">
+    <div v-show="this.game.gameEnd" class="winning-msg">
       <h1>{{ this.game.winner }} has won the game!</h1>
+      <button v-on:click="restartGame">
+        Restart Game
+      </button>
     </div>
   </div>
 </template>
@@ -70,6 +74,7 @@ export default {
                     this.gameEnd = true;
                     this.winner = user;
                     window.console.log('winner found')
+                    this.filledCellsArray = [];
                     return;
                 }
             }
@@ -173,6 +178,13 @@ export default {
     }
   },
   methods: {
+    createBoard() {
+      this.game.board = [];
+
+      for (let i = 0; i < 9; i++) {
+        this.game.board.push({ filledByPlayer: false, filledByBot: false }) 
+      }
+    },
     clickCell(index) {
       if (this.game.board[index].filledByPlayer || this.game.board[index].filledByBot) {
         return;
@@ -181,17 +193,22 @@ export default {
         window.console.log('called clickcell')
         this.game.nextTurn()
       }
+    },
+    restartGame() {
+      this.game.winner = '';
+      this.game.gameEnd = false;
+      this.createBoard()
     }
   },
   created() {
-    for (let i = 0; i < 9; i++) {
-      this.game.board.push({ filledByPlayer: false, filledByBot: false }) 
-    }
+    this.createBoard()
   }
 }
 </script>
 
-<style>
+<style lang="scss">
+$bg-color: #f5eded;
+
 * {
   margin: 0;
   padding: 0;
@@ -202,26 +219,68 @@ export default {
 body {
   width: 100%;
   height: 100vh;
+  background-color: $bg-color;
 }
 
 #app {
   display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
-  justify-content: center;
-  align-items: center;
+  position: relative;
+}
+
+.title {
+  font-size: 4rem;
+  margin: 0 auto;
+  color: #3e3636;
+  padding-top: 40px;
 }
 
 .winning-msg {
   position: absolute;
   display: flex;
+  flex-direction: column;
+  animation: winning-msg-anim 1s ease;
   z-index: 2;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  background: black;
   justify-content: center;
   align-items: center;
   color: white;
   font-size: 2rem;
+  text-align: center;
+
+  button {
+    display: block;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    margin-top: 10px;
+    background-color: white;
+    transition: all .5s ease;
+    color: black;
+    height: 50px;
+    width: 150px;
+    outline: none !important;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgb(221, 221, 221);
+    }
+  }
+}
+
+@keyframes winning-msg-anim {
+  from {
+    opacity: .5;
+    transform: translateY(-100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>
