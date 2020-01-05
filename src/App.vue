@@ -8,6 +8,10 @@
         Restart Game
       </button>
     </div>
+    <p class="google-analytics-para">
+      Click <a href="#" v-on:click.prevent="disableTracking">here</a>,
+      to disable tracking through Google Analytics.
+    </p>
   </div>
 </template>
 
@@ -198,10 +202,17 @@ export default {
       this.game.winner = '';
       this.game.gameEnd = false;
       this.createBoard()
+    },
+    disableTracking() {
+      this.$ga.disable();
+      alert('Tracking disabled');
     }
   },
   created() {
     this.createBoard()
+  },
+  mounted() {
+    this.$ga.page('/');
   }
 }
 </script>
@@ -270,6 +281,13 @@ body {
       background-color: rgb(221, 221, 221);
     }
   }
+}
+
+.google-analytics-para {
+  position: absolute;
+  font-size: .8rem;
+  bottom: 10px;
+  right: 10px;
 }
 
 @keyframes winning-msg-anim {
