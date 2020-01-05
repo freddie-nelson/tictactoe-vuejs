@@ -201,6 +201,7 @@ export default {
     restartGame() {
       this.game.winner = '';
       this.game.gameEnd = false;
+      this.game.playersTurn = true;
       this.createBoard()
     },
     disableTracking() {
