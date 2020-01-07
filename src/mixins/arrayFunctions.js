@@ -20,15 +20,27 @@ function arraysEqual(a, b) {
 
 
 function arrayMax(arr) {
-    let maxNum = -1;
-    let indexOfMaxNum = 0;
+    let maxNum = [-1];
+    let indexOfMaxNum = [null];
 
     for (let i = 0; i < arr.length; i++) {
         const num = arr[i];
         
-        if (num > maxNum) {
-            maxNum = num;
-            indexOfMaxNum = i;
+        if (num > maxNum[0]) {
+            maxNum[0] = num;
+            indexOfMaxNum[0] = i;
+        }
+    }
+
+    for (let i = 0; i < arr.length; i++) {
+        const num = arr[i];
+
+        if (num === maxNum[0]) {
+            maxNum.push(num);
+
+            if (i !== indexOfMaxNum[0]) {
+                indexOfMaxNum.push(i);
+            }
         }
     }
 
