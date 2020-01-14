@@ -32,25 +32,28 @@ export default {
         gameEnd: false,
         winner: '',
         filledCellsArray: [],
-        winningCombinations: [ [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 4, 8], [2, 4, 6] ],
+        winningCombinations: [ [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 4, 8], [2, 4, 6] ], // Set the values that we can check against for a winner
         checkWinner() {
+          // use a loop to check for a winner from the Player and the Bot
           for (let i = 0; i <= 1; i++) {
 
             let user;
-            i === 1 ? user = 'Player' : user = 'Bot';
+            i === 1 ? user = 'Player' : user = 'Bot'; // decide what user we are checking from the loops index
 
             let arr = [];
             
+            // loop through every cell in the board and check if it is filled by the user we are currently checking
             for (let i = 0; i < this.board.length; i++) {
                 const obj = this.board[i];
 
                 if (obj[`filledBy${user}`] === true) {
-                    arr.push(i);
+                    arr.push(i); // push the cell into the array if it is filled by the user
                 }
             }
 
-            window.console.log(user, arr);
+            // window.console.log(user, arr);
 
+            // check against the winning combinations to see if a user has placed in matching cells
             for (let i = 0; i < this.winningCombinations.length; i++) {
               const winningCombination = this.winningCombinations[i];
               let matches = 0
@@ -62,15 +65,16 @@ export default {
                       const num = winningCombination[i];
                   
                       if (num === playerNum) {
-                          matches++;
+                          matches++; // if an index in a winning combination matches an index that the user has placed on add one to the matches counter
                       }
                   }
               }
               this.filledCellsArray.push(matches);
             }
 
-            window.console.log(this.filledCellsArray)
+            // window.console.log(this.filledCellsArray)
 
+            // check to see if a player has won (if they have they will have a match equal to 3)
             for (let i = 0; i < this.filledCellsArray.length; i++) {
               const num = this.filledCellsArray[i];
 
@@ -83,9 +87,10 @@ export default {
                 }
             }
 
-            this.filledCellsArray = [];
+            this.filledCellsArray = []; // reset the filledCellsArray for the next time we check for a winner
           }
 
+          // check for a draw by seeing if all squares are filled by either player
           let filledCounter = 0;
           this.board.forEach(obj => obj.filledByPlayer || obj.filledByBot ? filledCounter++ : null);
 
@@ -96,11 +101,11 @@ export default {
           }
         },
         nextTurn: () => {
-          this.game.checkWinner()  
+          this.game.checkWinner() // after every turn check for a winner again 
           if (!this.game.gameEnd) {
-            this.game.playersTurn = !this.game.playersTurn;
+            this.game.playersTurn = !this.game.playersTurn; // if the game hasn't ended sqitch whos turn it is
             if (!this.game.playersTurn) {
-              this.bot.play()
+              this.bot.play() // if it's the bot's turn make him play
             }
           }
         }
@@ -124,11 +129,12 @@ export default {
           }
 
           // Get the odds for each winning combination so we can check what one the player will most likely go for
+          // we then use the matches variable to keep track of how likely the player is to go for each combonation and we push them into an array
           for (let i = 0; i < this.game.winningCombinations.length; i++) {
               const winningCombination = this.game.winningCombinations[i];
               let matches = 0
 
-              for (let i = 0; i < winningCombination.length; i++) {
+              for (let i = 0; i < arr.length; i++) {
                   const playerNum = arr[i];
                   
                   for (let i = 0; i < 3; i++) {
@@ -142,10 +148,78 @@ export default {
               chanceArray.push(matches);
           }
 
-          // get the most likely winning combination
-          indexOfMaxMatch = arrayFunctions.arrayMax(chanceArray)[1];
+          // window.console.log('chanceArray: ' + chanceArray)
 
-          mostLikelyWinningCombination = this.game.winningCombinations[indexOfMaxMatch];
+          // get the most likely winning combination
+          indexOfMaxMatch = arrayFunctions.arrayMax(chanceArray, this.game.board)[1];
+
+          // window.console.log('indexOfMaxMatch: ' + indexOfMaxMatch)
+
+          let mostLikelyWinningCombinations = [];
+
+          for (let i = 0; i < indexOfMaxMatch.length; i++) {
+              const index = indexOfMaxMatch[i];
+              let blockedSpaces = 0
+
+              for (let i = 0; i < this.game.winningCombinations[index].length; i++) {
+                  let cellIndex;
+
+                  if (this.game.winningCombinations[index][i] !== undefined) {
+                      cellIndex = this.game.winningCombinations[index][i];
+                  } else {
+                      return undefined
+                  }
+
+                  if (this.game.board[cellIndex].filledByPlayer || this.game.board[cellIndex].filledByBot) {
+                      blockedSpaces++
+                  }
+              }
+
+              if (blockedSpaces !== 3) {
+                  mostLikelyWinningCombinations.push(this.game.winningCombinations[index])
+              }
+          }
+
+          mostLikelyWinningCombination = mostLikelyWinningCombinations[arrayFunctions.randomIndex(mostLikelyWinningCombinations)]
+          
+          // window.console.log('mostLikelyWinningCombination: ' + mostLikelyWinningCombination)
+          // window.console.log('this.game.board[mostLikelyWinningCombination] = ' + this.game.board[mostLikelyWinningCombination])
+
+          if (!mostLikelyWinningCombination) {
+            // window.console.log('mostLikey... === undefined')
+
+            indexOfMaxMatch = arrayFunctions.getNextBestArr(chanceArray);
+
+            mostLikelyWinningCombinations = [];
+
+            for (let i = 0; i < indexOfMaxMatch.length; i++) {
+              const index = indexOfMaxMatch[i];
+              let blockedSpaces = []
+
+              for (let i = 0; i < this.game.winningCombinations[index].length; i++) {
+                  let cellIndex;
+
+                  if (this.game.winningCombinations[index][i] !== undefined) {
+                      cellIndex = this.game.winningCombinations[index][i];
+                  } else {
+                      return undefined
+                  }
+
+                  if (this.game.board[cellIndex].filledByPlayer || this.game.board[cellIndex].filledByBot) {
+                      blockedSpaces.push(i)
+                  }
+              }
+
+              if (blockedSpaces.length !== 3) {
+                  mostLikelyWinningCombinations.push(this.game.winningCombinations[index])
+              }
+            }
+
+            mostLikelyWinningCombination = mostLikelyWinningCombinations[arrayFunctions.randomIndex(mostLikelyWinningCombinations)]
+
+            // window.console.log('fixed mostLikelyWinningCombination = ' + mostLikelyWinningCombination)
+
+          }
 
           for (let i = 0; i < 3; i++) {
               const obj = this.game.board[mostLikelyWinningCombination[i]];
@@ -155,10 +229,10 @@ export default {
               } 
           }
 
-          let randomIndex = Math.floor(Math.random() * playablePositions.length);
+          let randomPlayPosIndex = arrayFunctions.randomIndex(playablePositions);
 
           if (playablePositions.length > 0) {
-            playPosition = playablePositions[randomIndex];
+            playPosition = playablePositions[randomPlayPosIndex];
             this.game.board[playPosition].filledByBot = true;
           }
 
@@ -172,10 +246,10 @@ export default {
                   }
                   
               }
-              playPosition = playablePositions[randomIndex];
+              playPosition = playablePositions[randomPlayPosIndex];
               this.game.board[playPosition].filledByBot = true;
           }
-
+          // window.console.log(playPosition)
           this.game.nextTurn()
         }
       }
@@ -194,7 +268,6 @@ export default {
         return;
       } else {
         this.game.board[index].filledByPlayer = true;
-        window.console.log('called clickcell')
         this.game.nextTurn()
       }
     },
@@ -253,7 +326,7 @@ body {
   position: absolute;
   display: flex;
   flex-direction: column;
-  animation: winning-msg-anim 1s ease;
+  animation: winning-msg-anim 2.5s ease;
   z-index: 2;
   width: 100%;
   height: 100%;
@@ -292,12 +365,17 @@ body {
 }
 
 @keyframes winning-msg-anim {
-  from {
+  0% {
     opacity: .5;
     transform: translateY(-100%);
   }
 
-  to {
+  50% {
+    opacity: .5;
+    transform: translateY(-100%);
+  }
+
+  100% {
     opacity: 1;
     transform: translateY(0);
   }

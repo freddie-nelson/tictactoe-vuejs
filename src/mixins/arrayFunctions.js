@@ -19,7 +19,7 @@ function arraysEqual(a, b) {
 }
 
 
-function arrayMax(arr) {
+function arrayMax(arr, board) {
     let maxNum = [-1];
     let indexOfMaxNum = [null];
 
@@ -44,10 +44,56 @@ function arrayMax(arr) {
         }
     }
 
+    for (let i = 0; i < board.length; i++) {
+        const cell = board[i];
+        let counter = 0;
+        
+        if (cell.filledByPlayer || cell.filledByBot) {
+            counter++;
+        } 
+
+        if (counter === 3) {
+            indexOfMaxNum = [];
+            for (let i = 0; i < arr.length; i++) {
+                const num = arr[i];
+
+                if (num === 1) {
+                    indexOfMaxNum.push(i);
+                }
+                
+            }
+        }
+    }
+
+
+
     return [maxNum, indexOfMaxNum];
+}
+
+
+function getNextBestArr(arr) {
+    let indexOfMaxNum = [];
+
+    for (let i = 0; i < arr.length; i++) {
+        const num = arr[i];
+
+        if (num === 1) {
+            indexOfMaxNum.push(i)
+        }
+    }
+
+    return indexOfMaxNum
+}
+
+function randomIndex(arr) {
+    return Math.floor(Math.random() * arr.length);
 }
 
 export {
     arraysEqual,
-    arrayMax
+    arrayMax,
+    getNextBestArr,
+    randomIndex
 }
+
+
