@@ -22,18 +22,27 @@
       <a href="#" @click.prevent="disableTracking">here</a>,
       to disable tracking through Google Analytics.
     </p>
+    <img
+      :style="{ filter: this.themeBtnFilter }"
+      src="./assets/art.svg"
+      @click="changeTheme"
+      class="theme-changer"
+    />
   </div>
 </template>
 
 <script>
 import Board from "./components/Board";
 import * as arrayFunctions from "./mixins/arrayFunctions";
+import themes from "./mixins/themes";
+import convertColorToFilter from "./mixins/convertColorToFilter";
 
 export default {
   name: "app",
   components: {
     Board
   },
+  mixins: [convertColorToFilter],
   computed: {
     playerFilled() {
       const board = [...this.game.board];
@@ -74,6 +83,8 @@ export default {
   },
   data() {
     return {
+      themeBtnFilter: "",
+      currentThemeIndex: -1,
       line: "",
       showWinningMsg: false,
       botWinCount: 0,
@@ -462,6 +473,26 @@ export default {
         default:
           break;
       }
+    },
+    changeTheme() {
+      const keys = Object.keys(themes);
+      const root = document.documentElement.style;
+
+      this.currentThemeIndex++;
+
+      if (this.currentThemeIndex >= keys.length) this.currentThemeIndex = 0;
+
+      const theme = themes[keys[this.currentThemeIndex]];
+
+      for (const prop in theme) {
+        root.setProperty(prop, theme[prop]);
+      }
+
+      const filter = this.convertColorToFilter(theme["--filter"]).split(":")[1];
+      this.themeBtnFilter = filter.slice(1, filter.length - 1);
+
+      const storage = window.localStorage;
+      storage.setItem("currentThemeIndex", this.currentThemeIndex);
     }
   },
   mounted() {
@@ -474,15 +505,19 @@ export default {
       storage.setItem("playerWinCount", 0);
     }
 
+    storage.getItem("currentThemeIndex")
+      ? (this.currentThemeIndex = storage.getItem("currentThemeIndex") - 1)
+      : null;
+
     this.botWinCount = storage.getItem("botWinCount");
     this.playerWinCount = storage.getItem("playerWinCount");
+
+    this.changeTheme();
   }
 };
 </script>
 
 <style lang="scss">
-$bg-color: #f5eded;
-
 * {
   margin: 0;
   padding: 0;
@@ -493,7 +528,7 @@ $bg-color: #f5eded;
 body {
   width: 100%;
   height: 100vh;
-  background-color: $bg-color;
+  background-color: var(--bg-color);
   overflow: hidden;
 }
 
@@ -503,6 +538,21 @@ body {
   width: 100%;
   height: 100%;
   position: relative;
+}
+
+.theme-changer {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 28px;
+  height: auto;
+  cursor: pointer;
+  opacity: 0.3;
+  transition: opacity 0.3s ease-in;
+
+  &:hover {
+    opacity: 0.6;
+  }
 }
 
 .title {
@@ -517,12 +567,12 @@ body {
   display: flex;
   z-index: 2;
   width: 100%;
-  height: 150%;
-  margin-top: -14.5%;
-  background: #beb7b76e;
+  height: 200vh;
+  margin-top: -50vh;
+  background: var(--winning-msg-overlay);
   justify-content: center;
   align-items: center;
-  color: white;
+  color: var(--primary-text);
   text-align: center;
   font-size: 1.5rem;
 
@@ -531,7 +581,7 @@ body {
     flex-direction: column;
     align-items: center;
     padding: 40px;
-    background-color: #ecd6c3;
+    background-color: var(--winning-msg-bg);
     border-radius: 20px;
   }
 
@@ -541,16 +591,16 @@ body {
     border-radius: 10px;
     font-size: 1rem;
     margin-top: 10px;
-    background-color: white;
+    background-color: var(--button-bg);
     transition: all 0.5s ease;
-    color: black;
+    color: var(--button-text);
     height: 50px;
     width: 150px;
     outline: none !important;
     cursor: pointer;
 
     &:hover {
-      background-color: rgb(221, 221, 221);
+      background-color: var(--button-hover);
     }
   }
 }
@@ -560,6 +610,13 @@ body {
   font-size: 0.8rem;
   bottom: 10px;
   right: 10px;
+  color: var(--secondary-text);
+  opacity: 0.6;
+  transition: opacity 0.3s ease-in;
+
+  &:hover {
+    opacity: 1;
+  }
 }
 
 .fade-enter-active,

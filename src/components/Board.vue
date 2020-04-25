@@ -37,16 +37,12 @@ export default {
 </script>
 
 <style lang="scss">
-$bg-color: #f5eded;
-$border-color: #3e3636;
-$knots-crosses-color: #927070;
-
 .win-line {
   position: absolute;
   top: calc(50% - 11px);
   transform-origin: center;
   transform: scaleX(0.93);
-  background-color: #684e4e;
+  background-color: var(--win-line-color);
   width: 100%;
   height: 26px;
   border-radius: 20px;
@@ -112,10 +108,10 @@ $knots-crosses-color: #927070;
   width: 80vw;
   height: 80vw;
   margin: auto;
-  border: 20px solid $border-color;
+  border: 20px solid var(--border-color);
   border-radius: 20px;
   grid-gap: 20px;
-  background-color: $border-color;
+  background-color: var(--border-color);
   position: relative;
 
   &__cell {
@@ -123,7 +119,7 @@ $knots-crosses-color: #927070;
     justify-content: center;
     align-items: center;
     font-size: 3rem;
-    background-color: $bg-color;
+    background-color: var(--bg-color);
     border-radius: 3px;
 
     &-X {
@@ -140,7 +136,7 @@ $knots-crosses-color: #927070;
         position: absolute;
         width: 13%;
         height: 0px;
-        background-color: $knots-crosses-color;
+        background-color: var(--knots-crosses-color);
         border-radius: 30px;
         left: 0;
         right: 0;
@@ -169,8 +165,8 @@ $knots-crosses-color: #927070;
         position: absolute;
         width: 65%;
         height: 65%;
-        background-color: $bg-color;
-        border: 20px solid $knots-crosses-color;
+        background-color: var(--bg-color);
+        border: 20px solid var(--knots-crosses-color);
         border-radius: 50%;
         left: 0;
         right: 0;
@@ -181,7 +177,7 @@ $knots-crosses-color: #927070;
         transform: scale(0);
 
         @media (max-width: 768px) {
-          border: 8px solid $knots-crosses-color;
+          border: 8px solid var(--knots-crosses-color);
         }
       }
     }
