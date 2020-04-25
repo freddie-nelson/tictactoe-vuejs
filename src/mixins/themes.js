@@ -1,9 +1,9 @@
 export default {
-  default: {
+  Default: {
     "--bg-color": "#f5eded",
     "--border-color": "#3e3636",
     "--knots-crosses-color": "#927070",
-    "--primary-text": "#fff",
+    "--primary-text": "#e2ded3",
     "--secondary-text": "#000",
     "--winning-msg-bg": "#ecd6c3",
     "--winning-msg-overlay": "#beb7b76e",
@@ -13,21 +13,21 @@ export default {
     "--win-line-color": "#684e4e",
     "--filter": "#927070"
   },
-  dark: {
-    "--bg-color": "#0e153a",
-    "--border-color": "#1f4287",
-    "--knots-crosses-color": "#3d5af1",
-    "--primary-text": "#e2f3f5",
-    "--secondary-text": "#e2f3f5",
-    "--winning-msg-bg": "#22d1ee",
-    "--winning-msg-overlay": "#22d1ee6e",
-    "--button-bg": "#e2f3f5",
-    "--button-hover": "#dee1ec",
-    "--button-text": "#0e153a",
-    "--win-line-color": "#581b98",
-    "--filter": "#e2f3f5"
+  Dark: {
+    "--bg-color": "#121212",
+    "--border-color": "#242424",
+    "--knots-crosses-color": "#E91EA4",
+    "--primary-text": "#e2ded3",
+    "--secondary-text": "#e2ded3",
+    "--winning-msg-bg": "#000",
+    "--winning-msg-overlay": "#2424249e",
+    "--button-bg": "#E91E63",
+    "--button-hover": "#E91EA4",
+    "--button-text": "#FFF",
+    "--win-line-color": "#E91E63",
+    "--filter": "#e2ded3"
   },
-  solar: {
+  Solar: {
     "--bg-color": "#4e413b",
     "--border-color": "#857671",
     "--knots-crosses-color": "#ff6d24",
@@ -41,21 +41,35 @@ export default {
     "--win-line-color": "#e2ded3",
     "--filter": "#e2f3f5"
   },
-  color: {
+  Blue: {
+    "--bg-color": "#0e153a",
+    "--border-color": "#1f4287",
+    "--knots-crosses-color": "#3d5af1",
+    "--primary-text": "#e2f3f5",
+    "--secondary-text": "#e2f3f5",
+    "--winning-msg-bg": "#22d1ee",
+    "--winning-msg-overlay": "#22d1ee6e",
+    "--button-bg": "#e2f3f5",
+    "--button-hover": "#dee1ec",
+    "--button-text": "#0e153a",
+    "--win-line-color": "#581b98",
+    "--filter": "#e2f3f5"
+  },
+  Purple: {
     "--bg-color": "#581b98",
     "--border-color": "#9c1de7",
     "--knots-crosses-color": "#f3558e",
-    "--primary-text": "#7c203a",
+    "--primary-text": "#e2f3f5",
     "--secondary-text": "#e2f3f5",
-    "--winning-msg-bg": "#faee1c",
-    "--winning-msg-overlay": "#faee1c6e",
+    "--winning-msg-bg": "#574b90",
+    "--winning-msg-overlay": "#fccde26e",
     "--button-bg": "#e2f3f5",
     "--button-hover": "#dee1ec",
     "--button-text": "#7c203a",
     "--win-line-color": "#fccde2",
     "--filter": "#e2f3f5"
   },
-  green: {
+  Green: {
     "--bg-color": "#3b5441",
     "--border-color": "#2cb978",
     "--knots-crosses-color": "#83e85a",
@@ -69,7 +83,7 @@ export default {
     "--win-line-color": "#fccde2",
     "--filter": "#e2f3f5"
   },
-  blood: {
+  Blood: {
     "--bg-color": "#2b2024",
     "--border-color": "#a80038",
     "--knots-crosses-color": "#fd0054",

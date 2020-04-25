@@ -19,15 +19,30 @@
     </transition>
     <p class="google-analytics-para">
       Click
-      <a href="#" @click.prevent="disableTracking">here</a>,
-      to disable tracking through Google Analytics.
+      <a href="#" @click.prevent="disableTracking">here</a>, to disable tracking
+      through Google Analytics.
     </p>
     <img
       :style="{ filter: this.themeBtnFilter }"
       src="./assets/art.svg"
-      @click="changeTheme"
+      @click="showThemeSelector = !showThemeSelector"
       class="theme-changer"
     />
+    <transition name="grow">
+      <div class="theme-changer-menu" v-if="showThemeSelector">
+        <div
+          class="item"
+          v-for="(theme, index) in themeNames"
+          :key="index"
+          :style="{
+          color:
+            currentThemeIndex === index ? 'var(--knots-crosses-color)' : '',
+          backgroundColor: currentThemeIndex === index ? '#00000033' : ''
+        }"
+          @click="changeTheme(index)"
+        >{{ theme }}</div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -83,6 +98,8 @@ export default {
   },
   data() {
     return {
+      showThemeSelector: false,
+      themeNames: Object.keys(themes),
       themeBtnFilter: "",
       currentThemeIndex: -1,
       line: "",
@@ -151,6 +168,7 @@ export default {
             this.game.playersTurn = !this.game.playersTurn; // if the game hasn't ended switch whos turn it is
             if (!this.game.playersTurn) {
               this.bot.play(); // if it's the bot's turn make him play
+              // this.game.playersTurn = true;
             }
           }
         }
@@ -422,9 +440,12 @@ export default {
         this.game.winner = "There has been a draw!";
       }
 
-      setTimeout(() => {
-        this.showWinningMsg = true;
-      }, 1000);
+      setTimeout(
+        () => {
+          this.showWinningMsg = true;
+        },
+        user === "player" ? 1200 : user === "bot" ? 2000 : 200
+      );
 
       window.console.log("winner found");
       this.game.filledCellsArray = [];
@@ -437,50 +458,62 @@ export default {
       this.game.gameEnd = true;
 
       if (!combo) return;
-      switch (combo.toString()) {
-        case "0,1,2":
-          winLineHorizontal.style.cssText += `top: ${spacing}px;`;
-          this.line = "horizontal";
-          break;
-        case "3,4,5":
-          this.line = "horizontal";
-          break;
-        case "6,7,8":
-          winLineHorizontal.style.cssText += `bottom: ${spacing}px; top: auto;`;
-          this.line = "horizontal";
-          break;
-        case "0,3,6":
-          winLineVertical.style.cssText += `left: ${spacing}px;`;
-          this.line = "vertical";
-          break;
-        case "1,4,7":
-          this.line = "vertical";
-          break;
-        case "2,5,8":
-          winLineVertical.style.cssText += `right: ${spacing}px; left: auto;`;
-          this.line = "vertical";
-          break;
-        case "0,4,8":
-          winLineDiagonal.style.cssText += `transform: scaleY(1) rotate(-45deg); left: ${spacing -
-            64}px; top: ${spacing - 53}px;`;
-          this.line = "diagonal";
-          break;
-        case "2,4,6":
-          winLineDiagonal.style.cssText += `transform: scaleY(1) rotate(45deg); left: auto; right: ${spacing -
-            64}px; top: ${spacing - 53}px;`;
-          this.line = "diagonal";
-          break;
-        default:
-          break;
-      }
+      window.console.log(combo.toString());
+      setTimeout(
+        () => {
+          switch (combo.toString()) {
+            case "0,1,2":
+              winLineHorizontal.style.cssText = `top: ${spacing}px;`;
+              this.line = "horizontal";
+              break;
+            case "3,4,5":
+              winLineHorizontal.style.cssText = "";
+              this.line = "horizontal";
+              break;
+            case "6,7,8":
+              winLineHorizontal.style.cssText = `bottom: ${spacing}px; top: auto;`;
+              this.line = "horizontal";
+              break;
+            case "0,3,6":
+              winLineVertical.style.cssText = `left: ${spacing}px;`;
+              this.line = "vertical";
+              break;
+            case "1,4,7":
+              winLineVertical.style.cssText = "";
+              this.line = "vertical";
+              break;
+            case "2,5,8":
+              winLineVertical.style.cssText = `right: ${spacing}px; left: auto;`;
+              this.line = "vertical";
+              break;
+            case "0,4,8":
+              winLineDiagonal.style.cssText = `transform: scaleY(1) rotate(-45deg); left: ${spacing -
+                64}px; top: ${spacing - 53}px;`;
+              this.line = "diagonal";
+              break;
+            case "2,4,6":
+              winLineDiagonal.style.cssText = `transform: scaleY(1) rotate(45deg); left: auto; right: ${spacing -
+                64}px; top: ${spacing - 53}px;`;
+              this.line = "diagonal";
+              break;
+            default:
+              break;
+          }
+        },
+        user === "player" ? 200 : 1000
+      );
     },
-    changeTheme() {
+    changeTheme(index) {
       const keys = Object.keys(themes);
       const root = document.documentElement.style;
 
-      this.currentThemeIndex++;
+      if (this.currentThemeIndex === index) return;
 
-      if (this.currentThemeIndex >= keys.length) this.currentThemeIndex = 0;
+      if (index !== undefined) {
+        this.currentThemeIndex = index;
+      }
+
+      window.console.log(this.currentThemeIndex);
 
       const theme = themes[keys[this.currentThemeIndex]];
 
@@ -506,7 +539,7 @@ export default {
     }
 
     storage.getItem("currentThemeIndex")
-      ? (this.currentThemeIndex = storage.getItem("currentThemeIndex") - 1)
+      ? (this.currentThemeIndex = storage.getItem("currentThemeIndex"))
       : null;
 
     this.botWinCount = storage.getItem("botWinCount");
@@ -523,6 +556,8 @@ export default {
   padding: 0;
   box-sizing: border-box;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  transition: border-color 0.2s ease-in, color 0.2s ease-in,
+    background-color 0.2s ease-in;
 }
 
 body {
@@ -540,6 +575,34 @@ body {
   position: relative;
 }
 
+.theme-changer-menu {
+  min-width: 110px;
+  background-color: var(--border-color);
+  position: absolute;
+  bottom: 50px;
+  left: 10px;
+  border-radius: 8px;
+  padding: 8px;
+  transform-origin: bottom;
+
+  .item {
+    width: 100%;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    color: var(--primary-text);
+    transition: color 0.3s ease-in, background-color 0.3s ease-in;
+    padding: 5px;
+    margin: 5px 0;
+    border-radius: 8px;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--knots-crosses-color);
+    }
+  }
+}
+
 .theme-changer {
   position: absolute;
   bottom: 10px;
@@ -551,7 +614,7 @@ body {
   transition: opacity 0.3s ease-in;
 
   &:hover {
-    opacity: 0.6;
+    opacity: 1;
   }
 }
 
@@ -621,10 +684,19 @@ body {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 2s, transform 2s;
+  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
-  transform: translateY(-20%);
+  transform: translateY(-50vh);
+}
+
+.grow-enter-active,
+.grow-leave-active {
+  transition: transform 0.15s ease-out;
+}
+.grow-enter,
+.grow-leave-to {
+  transform: scaleY(0);
 }
 </style>
