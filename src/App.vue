@@ -12,7 +12,9 @@
       <div v-if="this.showWinningMsg" class="winning-msg">
         <div>
           <h1>{{ this.game.winner }}</h1>
-          <h2>Current Rankings: Bot - {{ botWinCount }} You - {{ playerWinCount }}</h2>
+          <h2>
+            Current Rankings: Bot - {{ botWinCount }} You - {{ playerWinCount }}
+          </h2>
           <button @click="restartGame">Restart Game</button>
         </div>
       </div>
@@ -35,12 +37,14 @@
           v-for="(theme, index) in themeNames"
           :key="index"
           :style="{
-          color:
-            currentThemeIndex === index ? 'var(--knots-crosses-color)' : '',
-          backgroundColor: currentThemeIndex === index ? '#00000033' : ''
-        }"
+            color:
+              currentThemeIndex === index ? 'var(--knots-crosses-color)' : '',
+            backgroundColor: currentThemeIndex === index ? '#00000033' : ''
+          }"
           @click="changeTheme(index)"
-        >{{ theme }}</div>
+        >
+          {{ theme }}
+        </div>
       </div>
     </transition>
   </div>
@@ -513,7 +517,7 @@ export default {
         this.currentThemeIndex = index;
       }
 
-      window.console.log(this.currentThemeIndex);
+      // window.console.log(this.currentThemeIndex);
 
       const theme = themes[keys[this.currentThemeIndex]];
 
@@ -540,7 +544,7 @@ export default {
 
     storage.getItem("currentThemeIndex")
       ? (this.currentThemeIndex = storage.getItem("currentThemeIndex"))
-      : null;
+      : (this.currentThemeIndex = 0);
 
     this.botWinCount = storage.getItem("botWinCount");
     this.playerWinCount = storage.getItem("playerWinCount");
