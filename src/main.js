@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import VueAnalytics from 'vue-analytics';
+import './registerServiceWorker'
 
 Vue.config.productionTip = false;
 
