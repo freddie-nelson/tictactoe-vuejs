@@ -6,6 +6,30 @@ module.exports = {
     manifestOptions: {
       background_color: "#f5eded"
     },
+    icons: [
+      {
+        src: "img/icons/icon-192x192.png",
+        sizes: "192x192",
+        type: "image/png"
+      },
+      {
+        src: "img/icons/icon-512x512.png",
+        sizes: "512x512",
+        type: "image/png"
+      },
+      {
+        src: "img/icons/icon-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "maskable"
+      },
+      {
+        src: "img/icons/icon-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable"
+      }
+    ],
     iconPaths: {
       favicon32: "img/icons/favicon-32x32.png",
       favicon16: "img/icons/favicon-16x16.png",
